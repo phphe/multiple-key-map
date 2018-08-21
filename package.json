@@ -1,11 +1,12 @@
 {
   "name": "multiple-key-map",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
-  "main": "dist/multiple-key-map.common.js",
-  "module": "dist/multiple-key-map.esm.js",
+  "main": "dist/multiple-key-map.cjs.js",
+  "module": "dist/multiple-key-map.es.js",
   "scripts": {
-    "build": "node build/build.js"
+    "build": "bili --format cjs,umd,umd-min,es --banner",
+    "dev": "bili --format cjs,umd --watch"
   },
   "author": "phphe <phphe@outlook.com> (https://github.com/phphe)",
   "unpkg": "dist/multiple-key-map.js",
@@ -17,7 +18,7 @@
     "url": "https://github.com/phphe/multiple-key-map.git"
   },
   "devDependencies": {
-    "rollup-helper": "^1.0.3"
+    "bili": "^3.0.14"
   },
   "dependencies": {},
   "license": "MIT"

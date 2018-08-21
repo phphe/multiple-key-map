@@ -4,4 +4,11 @@
 $ npm install multiple-key-map
 ```
 # API
-[check code in src/multiple-key-map.js](https://github.com/phphe/multiple-key-map/blob/master/src/multiple-key-map.js)
+## set(keys, value)
+## getNode(keys)
+## get(keys)
+## delete(keys, deleteChildNodes, excludeSelf)
+## hasNode(keys)
+## has(keys)
+## more
+[check source in src/multiple-key-map.js](https://github.com/phphe/multiple-key-map/blob/master/src/multiple-key-map.js)

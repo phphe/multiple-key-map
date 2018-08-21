@@ -1,89 +1,77 @@
 export default class MultipleKeyMap {
-  map = new Map();
-  levels;
-  size = 0;
-  /**
-   * [constructor description]
-   * @param  {[Number]} levels [levels]
-   */
-  constructor(levels) {
-    this.levels = levels
-  }
-  /**
-   * [set description]
-   * @param {[type]} key1 []
-   * @param {[type]} key2 []
-   * @param {[type]} ... []
-   * @param {[type]} value []
-   */
-  set(...args) {
-    const value = args.pop()
-    const lastKey = args.pop()
-    let parent = this.map
-    for (const arg of args) {
-      if (!parent.has(arg)) {
-        parent.set(arg, new Map())
+  store = {};
+  set(keys, value) {
+    let node = this.store
+    for (const key of keys) {
+      if (!node.children) {
+        // 使用WeakMap时出错: Invalid value used as weak map key
+        node.children = new Map
       }
-      parent = parent.get(arg)
-    }
-    parent.set(lastKey, value)
-    this.size++
-  }
-  /**
-   * [get description]
-   * @param  {[type]} key1 [description]
-   * @param  {[type]} key2 [description]
-   * @param  {[type]} ... [description]
-   * @return [type]        [description]
-   */
-  get(...args) {
-    const lastKey = args.pop()
-    let parent = this.map
-    for (const arg of args) {
-      if (!parent.has(arg)) {
-        return null
+      if (!node.children.has(key)) {
+        node.children.set(key, {})
       }
-      parent = parent.get(arg)
+      node = node.children.get(key)
     }
-    return parent.get(lastKey)
+    node.value = value
   }
-  /**
-   * [get description]
-   * @param  {[type]} key1 [description]
-   * @param  {[type]} key2 [description]
-   * @param  {[type]} ... [description]
-   */
-  delete(...args) {
-    const lastKey = args.pop()
-    let parent = this.map
-    const parents = [parent]
-    for (const arg of args) {
-      if (!parent.has(arg)) {
-        return
+  getNode(keys) {
+    let node = this.store
+    for (const key of keys) {
+      if (!node.children) {
+        throw ["can't find by keys", keys]
       }
-      parent = parent.get(arg)
-      parents.push(parent)
+      node = node.children.get(key)
     }
-    parent.delete && parent.delete(lastKey)
-    this.size--
-    for (let i = args.length - 1; i > 0; i--) {
-      if (parents[i].size === 0) {
-        parents[i - 1].delete(args[i])
+    return node
+  }
+  get(keys) {
+    return this.getNode(keys).value
+  }
+  delete(keys, deleteChildNodes, excludeSelf) {
+    const targetNode = this.getNode(keys)
+    if (!excludeSelf) {
+      delete targetNode.value
+    }
+    if (deleteChildNodes) {
+      delete targetNode.children
+    }
+    // 删除空分支
+    this.autoDeleteEmptyNodes(keys)
+  }
+  autoDeleteEmptyNodes(keys) {
+    const nodes = []
+    let current = this.store
+    let keys2 = keys.slice()
+    while (keys2.length > 0) {
+      const key = keys2.shift()
+      const node = current.children.get(key)
+      nodes.unshift([key, node, current])
+      current = node
+    }
+    for (const [key, node, parent] of nodes) {
+      if (node.children && node.children.size === 0) {
+        delete node.children
+      }
+      if (!node.hasOwnProperty('value') && !node.children) {
+        parent.children.delete(key)
+      } else {
+        break
       }
     }
   }
-  /**
-   * [get description]
-   * @param  {[type]} key1 [description]
-   * @param  {[type]} key2 [description]
-   * @param  {[type]} ... [description]
-   * @return [Boolean]        [description]
-   */
-  has(...args) {
-    return this.get(...args) != null
+  hasNode(keys) {
+    try {
+      return Boolean(this.getNode(keys))
+    } catch (e) {
+      return false
+    }
   }
-  clear() {
-    this.size = 0
-    this.map.clear()
+  has(keys) {
+    try {
+      const node = this.getNode(keys)
+      return Boolean(node && node.hasOwnProperty('value'))
+    } catch (e) {
+      return false
+    }
   }
 }
