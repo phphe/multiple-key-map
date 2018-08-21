@@ -1,5 +1,5 @@
 /*!
- * multiple-key-map v1.1.0
+ * multiple-key-map v1.1.1
  * (c) 2017-present phphe <phphe@outlook.com> (https://github.com/phphe)
  * Released under the MIT License.
  */

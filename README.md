@@ -11,4 +11,4 @@ $ npm install multiple-key-map
 ## hasNode(keys)
 ## has(keys)
 ## more
-[check source in src/multiple-key-map.js](https://github.com/phphe/multiple-key-map/blob/master/src/multiple-key-map.js)
+[check source in src/multiple-key-map.js](https://github.com/phphe/multiple-key-map/blob/master/src/index.js)

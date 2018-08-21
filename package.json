@@ -1,6 +1,6 @@
 {
   "name": "multiple-key-map",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "",
   "main": "dist/multiple-key-map.cjs.js",
   "module": "dist/multiple-key-map.es.js",
